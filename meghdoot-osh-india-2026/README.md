@@ -32,6 +32,7 @@ In a sandbox without Remotion's own Chrome download, point it at a local headles
 
 ## Assets
 
+- `export/meghdoot-osh-india-2026.mp4` — final rendered video (CRF 20, ready to post).
 - `public/photos/` — 27 relevant photos chosen from the 39 supplied (near-duplicates dropped), lightly sharpened.
 - `public/logo.png` — Meghdoot logo (transparent).
 - `public/audio/inspired.mp3` — "Inspired" by Kevin MacLeod (incompetech.com), licensed CC BY 4.0. **Credit is required wherever the video is posted** — see `CAPTION.md`.

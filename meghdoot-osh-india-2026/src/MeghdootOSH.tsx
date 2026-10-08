@@ -112,7 +112,7 @@ export const MeghdootOSH: React.FC = () => {
 
       <Audio
         src={staticFile('audio/inspired.mp3')}
-        volume={(f) => interpolate(f, [0, 6, TOTAL_FRAMES - 90, TOTAL_FRAMES - 4], [0, 0.9, 0.9, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}
+        volume={(f) => interpolate(f, [0, 6, TOTAL_FRAMES - 90, TOTAL_FRAMES - 4], [0, 0.78, 0.78, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}
       />
       {SHOTS.slice(1).map((s) => {
         const short = s.T <= 10;
@@ -128,7 +128,7 @@ export const MeghdootOSH: React.FC = () => {
       </Sequence>
       {BOOMS.map((f) => (
         <Sequence key={`boom${f}`} from={f} durationInFrames={66} name="boom">
-          <Audio src={staticFile('audio/boom.wav')} volume={0.42} />
+          <Audio src={staticFile('audio/boom.wav')} volume={0.32} />
         </Sequence>
       ))}
     </AbsoluteFill>
