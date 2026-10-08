@@ -116,14 +116,14 @@ export const SwooshWipe: React.FC<{T: number}> = ({T}) => {
   // Navy body (2600px) is centred on screen exactly at the mid-point, where the cut happens.
   const x = interpolate(p, [0, 1], [-914 - 2700, -914 + 2700]);
   const stripes: [string, number][] = [
-    [C.orangeDeep, 120],
-    [C.orange, 90],
-    ['#FFFFFF', 34],
-    [C.blue, 110],
-    [C.navy, 2600],
-    [C.blue, 70],
-    ['#FFFFFF', 24],
+    [C.orange, 120],
+    [C.white, 30],
     [C.orange, 60],
+    [C.white, 40],
+    [C.blue, 2600],
+    [C.white, 30],
+    [C.orange, 94],
+    [C.white, 30],
   ];
   return (
     <AbsoluteFill style={{overflow: 'hidden', pointerEvents: 'none'}}>
@@ -163,7 +163,7 @@ export const ShutterWipe: React.FC<{T: number; bars?: number}> = ({T, bars = 6})
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: i % 2 === 0 ? C.navy : C.navyDeep,
+                background: i % 2 === 0 ? C.white : C.light,
                 borderLeft: `6px solid ${i % 2 === 0 ? C.orange : C.blue}`,
                 transformOrigin: closed ? 'top' : 'bottom',
                 transform: `scaleY(${closed ? closing : 1 - opening})`,

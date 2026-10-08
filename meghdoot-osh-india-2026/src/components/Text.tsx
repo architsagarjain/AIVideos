@@ -1,6 +1,6 @@
 import React from 'react';
-import {Easing, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {C, FONT_DISPLAY, FONT_TEXT} from '../theme';
+import {Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
+import {C, CAPTION_TOP, FONT_DISPLAY, FONT_TEXT} from '../theme';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
@@ -24,7 +24,7 @@ export const RevealWords: React.FC<{
   stagger = 3,
   size,
   weight = 800,
-  color = C.white,
+  color = C.ink,
   accent = {},
   family = FONT_DISPLAY,
   lineHeight = 1.08,
@@ -102,58 +102,34 @@ export const Label: React.FC<{text: string; delay?: number; color?: string; size
   );
 };
 
-// Lower-third caption: brand bar + small label + headline.
+// Caption under the photo card: brand bar + small label + headline in ink.
 export const Caption: React.FC<{
   label: string;
   text: string;
   accent?: Record<string, string>;
   size?: number;
-  bottom?: number;
-}> = ({label, text, accent, size = 56, bottom = 110}) => {
+  top?: number;
+}> = ({label, text, accent, size = 56, top = CAPTION_TOP}) => {
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
   const outAt = durationInFrames - 12;
   const bar = interpolate(frame, [0, 14], [0, 1], {...clamp, easing: Easing.out(Easing.cubic)});
   const barOut = interpolate(frame, [outAt, outAt + 12], [1, 0], clamp);
   return (
-    <div style={{position: 'absolute', left: 64, right: 64, bottom, display: 'flex', gap: 26}}>
+    <div style={{position: 'absolute', left: 48, right: 48, top, display: 'flex', gap: 26}}>
       <div
         style={{
           width: 8,
           borderRadius: 4,
-          background: `linear-gradient(180deg, ${C.orange}, ${C.orangeDeep} 50%, ${C.blue})`,
+          background: `linear-gradient(180deg, ${C.orange}, ${C.blue})`,
           transform: `scaleY(${bar * barOut})`,
           transformOrigin: 'top',
         }}
       />
-      <div style={{display: 'flex', flexDirection: 'column', gap: 16, textShadow: '0 4px 24px rgba(0,0,0,0.45)'}}>
+      <div style={{display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 2}}>
         <Label text={label} delay={4} outAt={outAt} />
         <RevealWords text={text} delay={8} size={size} weight={800} accent={accent} outAt={outAt} />
       </div>
-    </div>
-  );
-};
-
-// Small logo badge pinned to the top-left during the photo sections.
-export const BrandBug: React.FC = () => {
-  const frame = useCurrentFrame();
-  const {fps, durationInFrames} = useVideoConfig();
-  const inn = spring({frame, fps, config: {damping: 200}, durationInFrames: 20});
-  const out = interpolate(frame, [durationInFrames - 12, durationInFrames], [0, 1], clamp);
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 40,
-        top: 40,
-        padding: '12px 20px',
-        borderRadius: 18,
-        background: 'rgba(255,255,255,0.94)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-        transform: `translateY(${(1 - inn) * -140 + out * -140}px)`,
-      }}
-    >
-      <Img src={staticFile('logo.png')} style={{width: 270, display: 'block'}} />
     </div>
   );
 };

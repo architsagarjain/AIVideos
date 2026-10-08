@@ -9,20 +9,24 @@ export const BEAT = 15;
 export const BAR = 60;
 export const TOTAL_FRAMES = 1680;
 
-// Colours sampled from the Meghdoot logo.
+// Meghdoot brand colours: primary orange + blue, light secondary.
 export const C = {
-  orange: '#F7931E',
-  orangeDeep: '#EE4A23',
-  blue: '#1E9AD6',
-  blueDeep: '#155C8E',
-  grey: '#6D6E71',
-  navy: '#0B1C33',
-  navyDeep: '#061223',
+  orange: '#F1682B',
+  orangeDeep: '#D9561C',
+  blue: '#0585C3',
+  blueDeep: '#04689A',
+  light: '#F4F4F6',
   white: '#FFFFFF',
-  offWhite: '#F5F7FA',
+  ink: '#1D2433',
+  muted: '#5E6573',
+  hairline: '#E2E4EA',
 };
 
-export const brandGradient = `linear-gradient(90deg, ${C.orangeDeep} 0%, ${C.orange} 45%, ${C.blue} 100%)`;
+export const brandGradient = `linear-gradient(90deg, ${C.orange} 0%, ${C.blue} 100%)`;
+
+// Shared page layout for photo sections: header, photo card, caption area.
+export const CARD = {x: 40, y: 160, w: 1000, h: 900};
+export const CAPTION_TOP = 1112;
 
 export const FONT_DISPLAY = 'Inter Display';
 export const FONT_TEXT = 'Inter';

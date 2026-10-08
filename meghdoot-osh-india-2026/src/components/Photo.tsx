@@ -1,165 +1,139 @@
 import React from 'react';
-import {AbsoluteFill, Easing, Img, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
-import {C, HEIGHT, WIDTH} from '../theme';
+import {AbsoluteFill, Easing, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {C, FONT_DISPLAY, WIDTH} from '../theme';
 
 // Inside a <Sequence>, useVideoConfig() reports that sequence's length.
 export const useShotLength = () => useVideoConfig().durationInFrames;
 
-export type KB = {from: number; to: number; x?: [number, number]; y?: [number, number]};
+const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
-export const KenBurns: React.FC<{
-  src: string;
-  kb?: KB;
-  focus?: string;
-  style?: React.CSSProperties;
-}> = ({src, kb = {from: 1.06, to: 1.16}, focus = '50% 35%', style}) => {
+export type Pic = {
+  n: string;
+  // Focus point in %, used as object-position.
+  fx?: number;
+  fy?: number;
+  // Horizontal pan across a wide photo, in object-position %.
+  pan?: [number, number];
+  zoom?: [number, number];
+};
+
+// Slow push-in, plus an optional pan so wide photos reveal the whole scene.
+export const KenBurns: React.FC<{pic: Pic}> = ({pic}) => {
   const frame = useCurrentFrame();
   const dur = useShotLength();
-  const p = interpolate(frame, [0, dur], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.sin),
-  });
-  const scale = kb.from + (kb.to - kb.from) * p;
-  const x = kb.x ? kb.x[0] + (kb.x[1] - kb.x[0]) * p : 0;
-  const y = kb.y ? kb.y[0] + (kb.y[1] - kb.y[0]) * p : 0;
+  const p = interpolate(frame, [0, dur], [0, 1], {...clamp, easing: Easing.inOut(Easing.sin)});
+  const [z0, z1] = pic.zoom ?? [1.04, 1.12];
+  const fx = pic.pan ? pic.pan[0] + (pic.pan[1] - pic.pan[0]) * p : pic.fx ?? 50;
   return (
-    <div style={{position: 'absolute', inset: 0, overflow: 'hidden', ...style}}>
+    <AbsoluteFill style={{overflow: 'hidden'}}>
       <Img
-        src={src}
+        src={pic.n}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          objectPosition: focus,
-          transform: `translate(${x}px, ${y}px) scale(${scale})`,
-        }}
-      />
-    </div>
-  );
-};
-
-const Shade: React.FC<{strength?: number}> = ({strength = 1}) => (
-  <AbsoluteFill
-    style={{
-      background: `linear-gradient(180deg, rgba(6,18,35,${0.45 * strength}) 0%, rgba(6,18,35,0) 22%, rgba(6,18,35,0) 45%, rgba(6,18,35,${0.88 * strength}) 100%)`,
-    }}
-  />
-);
-
-export const PortraitShot: React.FC<{n: string; kb?: KB; focus?: string; shade?: number}> = ({
-  n,
-  kb,
-  focus,
-  shade = 1,
-}) => (
-  <AbsoluteFill style={{backgroundColor: C.navyDeep}}>
-    <KenBurns src={n} kb={kb} focus={focus} />
-    <Shade strength={shade} />
-  </AbsoluteFill>
-);
-
-// A wide photo shown large on a card, with a blurred copy of itself behind.
-export const LandscapeShot: React.FC<{
-  n: string;
-  kb?: KB;
-  focus?: string;
-  top?: number;
-  height?: number;
-}> = ({n, kb = {from: 1.02, to: 1.12}, focus = '50% 50%', top = 170, height = 700}) => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const lift = spring({frame, fps, config: {damping: 200}, durationInFrames: 24});
-  return (
-    <AbsoluteFill style={{backgroundColor: C.navyDeep}}>
-      <Img
-        src={n}
-        style={{
-          position: 'absolute',
-          inset: -80,
-          width: WIDTH + 160,
-          height: HEIGHT + 160,
-          objectFit: 'cover',
-          filter: 'blur(36px) brightness(0.42) saturate(1.2)',
-        }}
-      />
-      <AbsoluteFill
-        style={{background: 'linear-gradient(180deg, rgba(6,18,35,0.15) 0%, rgba(6,18,35,0.75) 100%)'}}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 40,
-          top,
-          width: WIDTH - 80,
-          height,
-          borderRadius: 28,
-          overflow: 'hidden',
-          boxShadow: '0 30px 80px rgba(0,0,0,0.55)',
-          border: '3px solid rgba(255,255,255,0.9)',
-          transform: `translateY(${(1 - lift) * 30}px)`,
-        }}
-      >
-        <KenBurns src={n} kb={kb} focus={focus} />
-      </div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 40,
-          top: top + height + 22,
-          height: 6,
-          width: (WIDTH - 80) * lift,
-          borderRadius: 3,
-          background: `linear-gradient(90deg, ${C.orangeDeep}, ${C.orange} 45%, ${C.blue})`,
+          objectPosition: `${fx}% ${pic.fy ?? 40}%`,
+          transform: `scale(${z0 + (z1 - z0) * p})`,
+          transformOrigin: `${fx}% ${pic.fy ?? 40}%`,
         }}
       />
     </AbsoluteFill>
   );
 };
 
-// Two wide photos stacked, sliding in from opposite sides.
-export const SplitShot: React.FC<{
-  a: string;
-  b: string;
-  focusA?: string;
-  focusB?: string;
-  children?: React.ReactNode;
-  cardH?: number;
-  gap?: number;
-}> = ({a, b, focusA = '50% 45%', focusB = '50% 45%', children, cardH = 500, gap = 230}) => {
+// Light brand page with soft colour glows and faint diagonal lines.
+export const Page: React.FC<{children?: React.ReactNode}> = ({children}) => {
+  const frame = useCurrentFrame();
+  return (
+    <AbsoluteFill style={{backgroundColor: C.light}}>
+      <AbsoluteFill
+        style={{
+          background: `radial-gradient(circle at 95% 4%, rgba(241,104,43,0.13), transparent 40%), radial-gradient(circle at 0% 100%, rgba(5,133,195,0.12), transparent 45%)`,
+        }}
+      />
+      <AbsoluteFill
+        style={{
+          backgroundImage: 'repeating-linear-gradient(-35deg, rgba(29,36,51,0.028) 0 2px, transparent 2px 48px)',
+          backgroundPosition: `${frame * 0.5}px 0`,
+        }}
+      />
+      {children}
+    </AbsoluteFill>
+  );
+};
+
+export const Header: React.FC<{animate?: boolean}> = ({animate = false}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const inA = spring({frame, fps, config: {damping: 18, stiffness: 90}});
-  const inB = spring({frame: frame - 6, fps, config: {damping: 18, stiffness: 90}});
-  const top = (HEIGHT - (cardH * 2 + gap)) / 2;
-  const card = (src: string, focus: string, y: number, p: number, dir: number, kb: KB) => (
+  const p = animate ? spring({frame: frame - 4, fps, config: {damping: 200}, durationInFrames: 22}) : 1;
+  return (
     <div
       style={{
         position: 'absolute',
         left: 40,
-        top: y,
-        width: WIDTH - 80,
-        height: cardH,
-        borderRadius: 26,
-        overflow: 'hidden',
-        border: '3px solid rgba(255,255,255,0.9)',
-        boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
-        transform: `translateX(${(1 - p) * dir * 1150}px) rotate(${(1 - p) * dir * 4}deg)`,
+        right: 40,
+        top: 34,
+        height: 96,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        opacity: p,
+        transform: `translateY(${(1 - p) * -30}px)`,
       }}
     >
-      <KenBurns src={src} focus={focus} kb={kb} />
+      <Img src={staticFile('logo.png')} style={{width: 380, display: 'block'}} />
+      <div style={{textAlign: 'right', fontFamily: FONT_DISPLAY}}>
+        <div style={{fontWeight: 800, fontSize: 26, letterSpacing: '0.16em', color: C.orange}}>OSH INDIA 2026</div>
+        <div style={{fontWeight: 600, fontSize: 20, letterSpacing: '0.2em', color: C.muted, marginTop: 4}}>
+          GOREGAON · MUMBAI
+        </div>
+      </div>
     </div>
   );
+};
+
+// Rounded photo frame; its children are clipped to it.
+export const Card: React.FC<{
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}> = ({x, y, w, h, children, style}) => (
+  <div
+    style={{
+      position: 'absolute',
+      left: x,
+      top: y,
+      width: w,
+      height: h,
+      borderRadius: 32,
+      overflow: 'hidden',
+      backgroundColor: C.white,
+      boxShadow: '0 26px 60px rgba(29,36,51,0.18), 0 4px 12px rgba(29,36,51,0.08)',
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
+// Brand line that fills left to right over the section.
+export const ProgressLine: React.FC<{y: number; start?: number}> = ({y, start = 0}) => {
+  const frame = useCurrentFrame();
+  const dur = useShotLength();
+  const p = interpolate(frame, [start, dur], [0, 1], clamp);
   return (
-    <AbsoluteFill style={{backgroundColor: C.navy}}>
-      <AbsoluteFill
+    <div style={{position: 'absolute', left: 40, top: y, width: WIDTH - 80, height: 6, borderRadius: 3, background: C.hairline}}>
+      <div
         style={{
-          background: `radial-gradient(circle at 20% 15%, rgba(30,154,214,0.35), transparent 55%), radial-gradient(circle at 85% 90%, rgba(238,74,35,0.30), transparent 55%)`,
+          width: `${p * 100}%`,
+          height: '100%',
+          borderRadius: 3,
+          background: `linear-gradient(90deg, ${C.orange}, ${C.blue})`,
         }}
       />
-      {card(a, focusA, top, inA, -1, {from: 1.04, to: 1.14, x: [-10, 10]})}
-      {card(b, focusB, top + cardH + gap, inB, 1, {from: 1.14, to: 1.04, x: [10, -10]})}
-      <div style={{position: 'absolute', left: 0, right: 0, top: top + cardH, height: gap}}>{children}</div>
-    </AbsoluteFill>
+    </div>
   );
 };
