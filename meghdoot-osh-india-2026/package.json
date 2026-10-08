@@ -1,0 +1,21 @@
+{
+  "name": "meghdoot-osh-india-2026",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Meghdoot Logistics & Infra at OSH India 2026 — 4:5 social video built with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render MeghdootOSH out/meghdoot-osh-india-2026.mp4",
+    "still": "remotion still MeghdootOSH out/still.png"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.534",
+    "@remotion/fonts": "^4.0.534",
+    "@remotion/transitions": "^4.0.534",
+    "@types/react": "^18.3.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.534",
+    "typescript": "^7.0.2"
+  }
+}
