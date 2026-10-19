@@ -1,0 +1,21 @@
+{
+  "name": "snow-trial",
+  "version": "1.0.0",
+  "private": true,
+  "description": "John Snow / Broad Street pump: 12 s 9:16 motion-design trial built with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render SnowTrial out/snow-trial.mp4",
+    "still": "remotion still SnowTrial out/still.png"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "@remotion/fonts": "4.0.534",
+    "@remotion/motion-blur": "4.0.534",
+    "@types/react": "^18.3.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "4.0.534",
+    "typescript": "^5.6.3"
+  }
+}
