@@ -7,7 +7,7 @@ export const FPS = 30;
 export const TOTAL_FRAMES = 372; // 12.4 s, matches public/audio/vo.wav
 
 // Shot starts (frames), cut to the voiceover lines
-export const CUT = {street: 0, portrait: 86, map: 146, pump: 210};
+export const CUT = {street: 0, room: 42, portrait: 86, map: 146, pump: 210};
 
 export const C = {
   crimson: '#d22b2b',
