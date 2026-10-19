@@ -304,7 +304,7 @@ const MapShot: React.FC = () => {
   return (
     <AbsoluteFill style={{clipPath: `circle(${r}px at 540px 900px)`, transform: `translateX(${whip}px)`}}>
       <AbsoluteFill style={{background: '#0b0806', perspective: 1500}}>
-        <AbsoluteFill style={{transformOrigin: `${PUMP.x}px ${PUMP.y}px`, transform: `translateX(${tx}px) rotateX(16deg) rotateZ(${rz}deg) scale(${sc})`}}>
+        <AbsoluteFill style={{transformOrigin: `${PUMP.x}px ${PUMP.y}px`, transform: `translateX(${tx}px) rotateX(12deg) rotateZ(${rz}deg) scale(${sc})`}}>
           <FullImg src="img/map_clean.webp" />
           <Marks showUntil={999} start={4} end={60} />
           <Img
@@ -368,8 +368,8 @@ const Pump: React.FC = () => {
   const f = useCurrentFrame();
   const enter = ramp(f, [0, 12], [1400, 0]);
   // Camera lowers toward the table and pushes in on the pump (speed ramp)
-  const tilt = ramp(f, [6, 44], [18, 48], inOut) + ramp(f, [44, 162], [0, 4], Easing.linear);
-  const sc = ramp(f, [6, 44], [1.1, 1.7], inOut) + ramp(f, [44, 162], [0, 0.18], Easing.linear);
+  const tilt = ramp(f, [6, 44], [12, 34], inOut) + ramp(f, [44, 162], [0, 3], Easing.linear);
+  const sc = ramp(f, [6, 44], [1.35, 2.05], inOut) + ramp(f, [44, 162], [0, 0.2], Easing.linear);
   const rz = ramp(f, [0, 44], [6, -2], inOut);
   const draw = interpolate(f, [40, 56], [1, 0], {...clamp, easing: inOut});
   // Pump pops up out of the paper like a pop-up book
@@ -384,7 +384,7 @@ const Pump: React.FC = () => {
       <ellipse cx={PUMP.x} cy={PUMP.y - 60} rx={(280 + 240 * snap(k)) * 1.1} ry={280 + 240 * snap(k)} fill="none" stroke={C.crimson} strokeWidth={10} opacity={1 - k} />
     ) : null;
   };
-  const PW = 250;
+  const PW = 190;
   const PH = (1490 / 851) * PW;
 
   return (
@@ -421,8 +421,8 @@ const Pump: React.FC = () => {
           />
         </AbsoluteFill>
       </AbsoluteFill>
-      <div style={{position: 'absolute', top: 1500, left: 90, transform: `translateX(${tagX}px) rotate(-3deg)`}}>
-        <TornTag text="BROAD STREET PUMP" w={900} h={150} size={78} seed="pump" />
+      <div style={{position: 'absolute', top: 1500, left: 70, transform: `translateX(${tagX}px) rotate(-3deg)`}}>
+        <TornTag text="BROAD STREET PUMP" w={940} h={150} size={70} seed="pump" />
       </div>
       <AbsoluteFill style={{background: '#000', opacity: dark}} />
     </AbsoluteFill>
