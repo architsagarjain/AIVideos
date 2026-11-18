@@ -31,6 +31,6 @@ Point Remotion at a local headless Chromium if it cannot download its own:
 ## Assets
 
 - `export/meghdoot-800t-crane.mp4` — final video (CRF 20, ready to post).
-- `public/photos/` — 20 photos chosen from the 27 supplied (near-duplicates and the WhatsApp collage left out).
+- `public/photos/` — 19 photos chosen from the 27 supplied (near-duplicates and the WhatsApp collage left out).
 - `public/audio/inspired.mp3` — "Inspired" by Kevin MacLeod (incompetech.com), CC BY 4.0, from 1:04 so it differs from the OSH video. **Credit required** — see `CAPTION.md`.
 - `public/audio/whoosh*.wav`, `boom.wav` — synthesised transition effects.
